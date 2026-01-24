@@ -10,7 +10,9 @@ The project is application driven and aims to build a poker bot that can perform
 
 ## Project Goals
 **Minimum goal**: To achieve a model that can play basic poker.
+
 **Realistic goal**: To achieve a model that can play poker well and achieve a net positive gain.
+
 **Moonshot goal**: To achieve a smart model that can play poker really well and have a 90% win rate, and possibly win against humans.
 
 
