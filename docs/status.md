@@ -61,7 +61,7 @@ Values initially followed recommended defaults suggested by Claude AI; the large
 ## Monte Carlo Counterfactual Regret Minimization (MCCFR)
 
 We also plan to train a poker agent using Monte Carlo Counterfactual Regret Minimization (MCCFR), a game-theoretic algorithm designed 
-specifically for large imperfect-information games. Unlike PPO, which learns via reward maximization, MCCFR iteratively minimizes *regret* — 
+specifically for large imperfect-information games. Unlike PPO, which learns via reward maximization, MCCFR iteratively minimizes regret — 
 the difference between the reward actually obtained and the reward that could have been obtained by playing the best action in hindsight. 
 At Nash equilibrium, regret approaches zero for all players. While we have not yet completed a successful training run, we understand the 
 algorithm and outline our planned implementation below.
@@ -69,7 +69,7 @@ algorithm and outline our planned implementation below.
 ### Method
 
 MCCFR operates over the full game tree. At each information set $I$ (the set of states indistinguishable to a player given their observations), 
-the algorithm maintains a **regret table** and a strategy table. The instantaneous regret for action $a$ at information set $I$ on iteration $t$ is:
+the algorithm maintains a regret table and a strategy table. The instantaneous regret for action $a$ at information set $I$ on iteration $t$ is:
 
 $$r^t(I, a) = v^\sigma(I, a) - v^\sigma(I)$$
 
@@ -82,15 +82,15 @@ The strategy at each iteration is updated via regret matching:
 
 $$\sigma^{t+1}(I, a) = \frac{\max(R^T(I, a),\ 0)}{\sum_{a'} \max(R^T(I, a'),\ 0)}$$
 
-The final policy is the **average strategy** $\bar{\sigma}$ accumulated across all iterations, which converges to a Nash equilibrium as $T \to \infty$. The "Monte Carlo" component refers to sampling only a subset of the game tree per iteration (outcome sampling or external sampling) rather than traversing it fully, making it tractable for large games like poker [(Lanctot et al., 2009)](https://papers.nips.cc/paper/2009/hash/00411460f7c92d2124a67ea0f4cb5f85-Abstract.html).
+The final policy is the average strategy $\bar{\sigma}$ accumulated across all iterations, which converges to a Nash equilibrium as $T \to \infty$. The "Monte Carlo" component refers to sampling only a subset of the game tree per iteration (outcome sampling or external sampling) rather than traversing it fully, making it tractable for large games like poker.
 
 In our setting, states $s_t$ encode the player's hole cards, community cards, pot size, stack sizes, and betting history. The action space mirrors our PPO setup (fold, check, call, raise ¼/½/full pot, all-in), with illegal actions excluded via the information set definition rather than a separate mask. Rewards are the chip delta at showdown, normalized by the starting stack.
 
 ### Planned Implementation & Hyperparameters
 
-We plan to implement **external sampling MCCFR**, where on each iteration one player's actions are sampled stochastically and the opponent's subtree is traversed fully, as this variant has favorable convergence properties for two-player zero-sum games [(Lanctot et al., 2009)](https://papers.nips.cc/paper/2009/hash/00411460f7c92d2124a67ea0f4cb5f85-Abstract.html). Regret and strategy tables will be stored as dictionaries keyed by information set, using abstracted bucket representations for cards and bet sizes to keep the state space tractable.
+We plan to implement external sampling MCCFR, where on each iteration one player's actions are sampled stochastically and the opponent's subtree is traversed fully, as this variant has favorable convergence properties for two-player zero-sum games. Regret and strategy tables will be stored as dictionaries keyed by information set, using abstracted representations for cards and bet sizes to keep the state space tractable.
 
-Default hyperparameter values follow Lanctot et al. (2009); we plan to tune iteration count and abstraction granularity based on convergence of exploitability.
+Default hyperparameter values planned to follow were provided by Claude, but we plan to tune iteration count and abstraction granularity based on its convergence.
 
 | Parameter | Planned Value | Tuning Plan |
 |---|---|---|
