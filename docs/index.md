@@ -17,3 +17,6 @@ https://github.com/AdithyaBollu/Group42-Three-Bet
 
 ## Resources
 [ask Badrish] 
+
+## LinkedIns + Pics
+[create 3 person table]
