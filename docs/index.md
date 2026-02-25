@@ -3,38 +3,17 @@ layout: default
 title:  Home
 ---
 
-Source code: https://github.com/USER/PROJECT (_fix this_)
+# Three Bet
 
-Reports:
+With what has been dubbed the "second boom" of poker, it feels like everybody has started going 'all-in'. In an effort to ensure that nobody gets left behind, our group decided 
+to focus our reinforcement learning pursuit in the direction of helping our fellow students test their skills against an intensely trained poker agent. To simplify the game to 
+its fundamentals, we decided to break the game down into 5 component moves: check, fold, raise quarter-pot, raise half-pot, raise full pot, but with the full 52-card standard deck.
+With a mix of PPO self-play and Monte Carlo CFR techniques/policies, we've developed our agent to become the perfect whetstone for our fellow classmates to hone their poker edge. 
 
-- [Proposal](proposal.html)
-- [Status](status.html)
-- [Final](final.html)
+<img width="480" height="270" alt="image" src="https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyNmNlcjBpNXR3MDJxbmlwdzMxeXEzeHBxcHFlaW81eHJ2Y210OHhwciZlcD12MV9naWZzX3NlYXJjaCZjdD1n/uERh6XQuSauCDkqgWM/giphy.gif" />
 
-What's Markdown (`.md`)?
+## Source Code
+https://github.com/AdithyaBollu/Group42-Three-Bet
 
-Markdown is markup that lets you write hypertext (HTML) documents
-in easy-to-read and easy-to-write plain text.
-No angle brackets `<></>` required for
-paragraphs, lists, blockquotes, tables, etc.
-
-
-This is a paragraph (in Markdown). Some more
-text here.
-
-This is another paragraph.
-
-This is a list:
-
-- Orange
-- Apple
-- Blueberry
-
-$$x^2 = y^2$$
-
-
-Just getting started with Markdown?
-See the [HTML <-> Markdown Quick Reference (Cheat Sheet)][quickref].
-
-
-[quickref]: https://github.com/mundimark/quickrefs/blob/master/HTML.md
+## Resources
+[ask Badrish] 
