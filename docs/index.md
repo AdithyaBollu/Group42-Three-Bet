@@ -23,3 +23,4 @@ https://github.com/AdithyaBollu/Group42-Three-Bet
 |---------|---------|
 | <img width="250" height="400" alt="image" src="../profiles/Adithya.jpg" /> | [LinkedIn](https://linkedin.com/in/adithya-bollu) |
 | <img width="400" height="400" alt="image" src="../profiles/Badrish.png" /> | [LinkedIn](https://www.linkedin.com/in/badrishananth/) |
+| <img width="400" height="400" alt="image" src="../profiles/Aditya.png" />| [LinkedIn](https://www.linkedin.com/in/aditya-vemuri-571838214/) |
