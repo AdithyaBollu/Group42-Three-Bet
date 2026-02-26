@@ -3,7 +3,7 @@ layout: default
 title:  Home
 ---
 
-# Three Bet
+# The Gutshot Gamble
 
 With what has been dubbed the "second boom" of poker, it feels like everybody has started going 'all-in'. In an effort to ensure that nobody gets left behind, our group decided 
 to focus our reinforcement learning pursuit in the direction of helping our fellow students test their skills against an intensely trained poker agent. To simplify the game to 
