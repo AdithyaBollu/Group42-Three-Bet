@@ -21,4 +21,5 @@ https://github.com/AdithyaBollu/Group42-Three-Bet
 ## LinkedIns + Pics
 | Profile | LinkedIn |
 |---------|---------|
-| ![My Image](https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyNmNlcjBpNXR3MDJxbmlwdzMxeXEzeHBxcHFlaW81eHJ2Y210OHhwciZlcD12MV9naWZzX3NlYXJjaCZjdD1n/uERh6XQuSauCDkqgWM/giphy.gif) | [LinkedIn](https://linkedin.com/in/adithya-bollu) |
+| <img width="250" height="400" alt="image" src="../profiles/Adithya.jpg" /> | [LinkedIn](https://linkedin.com/in/adithya-bollu) |
+| <img width="400" height="400" alt="image" src="../profiles/Badrish.png" /> | [LinkedIn](https://www.linkedin.com/in/badrishananth/) |
