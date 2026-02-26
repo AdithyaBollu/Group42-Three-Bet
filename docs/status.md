@@ -1,4 +1,3 @@
-
 ---
 layout: default
 title: Status
@@ -20,9 +19,9 @@ We train our poker agent using PPO, an on-policy actor–critic algorithm that i
 
 ### Method
 
-At each timestep the agent collects a tuple $(s\_t, a\_t, \log \pi\_\theta(a\_t \mid s\_t), V\_\theta(s\_t), r\_t, d\_t)$, where $s\_t$ is the game state, $a\_t$ the chosen action, $V\_\theta(s\_t)$ the critic's value estimate, $r\_t$ the reward (chips won/lost), and $d\_t$ a done flag. Experience is collected for 2048 steps before each update.
+At each timestep the agent collects a tuple \\(s_t, a_t, \log \pi_\theta(a_t \mid s_t), V_\theta(s_t), r_t, d_t\\), where \\(s_t\\) is the game state, \\(a_t\\) the chosen action, \\(V_\theta(s_t)\\) the critic's value estimate, \\(r_t\\) the reward (chips won/lost), and \\(d_t\\) a done flag. Experience is collected for 2048 steps before each update.
 
-Because poker has state-dependent legal actions (fold, check, call, raise ¼/½/full pot, all-in), we apply a binary action mask $m\_i \in \{0,1\}$ and renormalize the policy:
+Because poker has state-dependent legal actions (fold, check, call, raise ¼/½/full pot, all-in), we apply a binary action mask \\(m_i \in \{0,1\}\\) and renormalize the policy:
 
 $$\tilde{\pi}(a \mid s) = \frac{\pi(a \mid s) \cdot m_a}{\sum_j \pi(j \mid s) \cdot m_j}$$
 
@@ -32,7 +31,7 @@ PPO updates the policy by maximizing the clipped surrogate objective:
 
 $$L^{\text{CLIP}}(\theta) = \mathbb{E}_t \left[ \min\left( r_t(\theta)\, A_t,\ \text{clip}(r_t(\theta),\ 1-\varepsilon,\ 1+\varepsilon)\, A_t \right) \right]$$
 
-where $r\_t(\theta) = \pi\_\theta(a\_t \mid s\_t) / \pi\_{\theta\_{\text{old}}}(a\_t \mid s\_t)$ is the probability ratio and $\varepsilon = 0.2$ limits destructive updates. Advantages $A\_t$ are estimated using Generalized Advantage Estimation (GAE):
+where \\(r_t(\theta) = \pi_\theta(a_t \mid s_t) / \pi_{\theta_{\text{old}}}(a_t \mid s_t)\\) is the probability ratio and \\(\varepsilon = 0.2\\) limits destructive updates. Advantages \\(A_t\\) are estimated using Generalized Advantage Estimation (GAE):
 
 $$A_t = \sum_{l=0}^{\infty} (\gamma \lambda)^l \delta_{t+l}, \qquad \delta_t = r_t + \gamma V(s_{t+1}) - V(s_t)$$
 
@@ -40,7 +39,7 @@ The full training loss combines the clipped policy objective, a value function l
 
 $$L = L^{\text{CLIP}} - c_1 \, \mathbb{E}_t\left[(V_\theta(s_t) - R_t)^2\right] + c_2 \, \mathbb{E}_t\left[H(\pi_\theta(\cdot \mid s_t))\right]$$
 
-where $R\_t = A\_t + V(s\_t)$ are the bootstrapped returns. To better handle poker's high reward variance, we use a larger critic network (layers: 256–256–256) than the actor (128–128).
+where \\(R_t = A_t + V(s_t)\\) are the bootstrapped returns. To better handle poker's high reward variance, we use a larger critic network (layers: 256–256–256) than the actor (128–128).
 
 To stabilize the non-stationary multi-agent setting, we use snapshot self-play: every 50,000 steps the current agent is saved, and the opponent is randomly sampled from previous snapshots, refreshing every 50k steps. This approximates fictitious self-play and creates a curriculum of progressively stronger opponents. We've trained for a total of 10,000,000 environment steps and evaluate every 5,000 steps using a rolling win rate.
 
@@ -51,14 +50,14 @@ Values initially followed recommended defaults suggested by Claude AI; the large
 | Parameter | Value |
 |---|---|
 | Learning rate | 3e-4 |
-| Steps per update ($n$) | 2048 |
+| Steps per update (\\(n\\)) | 2048 |
 | Batch size | 256 |
 | Epochs per update | 10 |
-| Discount $\gamma$ | 0.95 |
-| GAE $\lambda$ | 0.9 |
-| Clip $\varepsilon$ | 0.2 |
-| Value loss coef $c\_1$ | 0.5 |
-| Entropy coef $c\_2$ | 0.01 |
+| Discount \\(\gamma\\) | 0.95 |
+| GAE \\(\lambda\\) | 0.9 |
+| Clip \\(\varepsilon\\) | 0.2 |
+| Value loss coef \\(c_1\\) | 0.5 |
+| Entropy coef \\(c_2\\) | 0.01 |
 | Total timesteps | 10,000,000 |
 | Snapshot frequency | 50,000 steps |
 | Snapshot pool size | 10 |
@@ -69,11 +68,11 @@ We also plan to train a poker agent using Monte Carlo Counterfactual Regret Mini
 
 ### Method
 
-MCCFR operates over the full game tree. At each information set $I$ (the set of states indistinguishable to a player given their observations), the algorithm maintains a regret table and a strategy table. The instantaneous regret for action $a$ at information set $I$ on iteration $t$ is:
+MCCFR operates over the full game tree. At each information set \\(I\\) (the set of states indistinguishable to a player given their observations), the algorithm maintains a regret table and a strategy table. The instantaneous regret for action \\(a\\) at information set \\(I\\) on iteration \\(t\\) is:
 
 $$r^t(I, a) = v^\sigma(I, a) - v^\sigma(I)$$
 
-where $v^\sigma(I, a)$ is the counterfactual value of taking action $a$ at $I$ and then following strategy $\sigma$, and $v^\sigma(I)$ is the counterfactual value of the current mixed strategy at $I$. Cumulative regret is then:
+where \\(v^\sigma(I, a)\\) is the counterfactual value of taking action \\(a\\) at \\(I\\) and then following strategy \\(\sigma\\), and \\(v^\sigma(I)\\) is the counterfactual value of the current mixed strategy at \\(I\\). Cumulative regret is then:
 
 $$R^T(I, a) = \sum_{t=1}^{T} r^t(I, a)$$
 
@@ -81,9 +80,9 @@ The strategy at each iteration is updated via regret matching:
 
 $$\sigma^{t+1}(I, a) = \frac{\max(R^T(I, a),\ 0)}{\sum_{a'} \max(R^T(I, a'),\ 0)}$$
 
-The final policy is the average strategy $\bar{\sigma}$ accumulated across all iterations, which converges to a Nash equilibrium as $T \to \infty$. The "Monte Carlo" component refers to sampling only a subset of the game tree per iteration rather than traversing it fully, making it tractable for large games like poker.
+The final policy is the average strategy \\(\bar{\sigma}\\) accumulated across all iterations, which converges to a Nash equilibrium as \\(T \to \infty\\). The "Monte Carlo" component refers to sampling only a subset of the game tree per iteration rather than traversing it fully, making it tractable for large games like poker.
 
-In our setting, states $s\_t$ encode the player's hole cards, community cards, pot size, stack sizes, and betting history. The action space mirrors our PPO setup (fold, check, call, raise ¼/½/full pot, all-in), with illegal actions excluded via the information set definition rather than a separate mask. Rewards are the chip delta at showdown, normalized by the starting stack.
+In our setting, states \\(s_t\\) encode the player's hole cards, community cards, pot size, stack sizes, and betting history. The action space mirrors our PPO setup (fold, check, call, raise ¼/½/full pot, all-in), with illegal actions excluded via the information set definition rather than a separate mask. Rewards are the chip delta at showdown, normalized by the starting stack.
 
 ### Planned Implementation & Hyperparameters
 
@@ -105,6 +104,8 @@ Default hyperparameter values were initially sourced from Claude AI, but we plan
 
 ### Quantitative
 <img src="https://github.com/AdithyaBollu/Group42-Three-Bet/blob/2be5e3d5462332db534f4fc6e00534f855ba1858/graphs.png" alt="Training Graphs">
+
+Looking at our graphs, we see that the approx KL and clip fraction are coming down, which means the policy is stabilizing as there are less "big updates" to the policy. Additionally, this is also visible through the clip fraction as less clips indicate that the model is stabilizing. However, the train entropy loss is starting to increase, which indicates that the model is becoming more deterministic rather than completely stochastic.
 
 ### Qualitative
 Early in training, the agent exhibited a clear bias toward calling almost every action regardless of hand strength or board texture, suggesting it had not yet learned to differentiate between strong and weak holdings. As training progressed, we began observing more appropriate behavior: the agent started checking back hands on dry, uncoordinated boards rather than blindly continuation betting, and demonstrated a greater willingness to call down with medium-strength holdings against potential bluffs. While the agent is still far from optimal and exhibits exploitable tendencies, the shift from undifferentiated calling to something resembling genuine decision making represents a meaningful improvement and suggests the policy is beginning to capture some of the underlying structure of poker strategy.
