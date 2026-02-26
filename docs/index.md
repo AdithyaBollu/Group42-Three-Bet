@@ -21,6 +21,6 @@ https://github.com/AdithyaBollu/Group42-Three-Bet
 ## LinkedIns + Pics
 | Profile | LinkedIn |
 |---------|---------|
-| <img width="250" height="400" src="/profiles/Adithya.jpg" /><br>**Adithya Bollu** | [LinkedIn](https://linkedin.com/in/adithya-bollu) |
-| <img width="400" height="400" src="/profiles/Badrish.png" /><br>**Badrish Ananth** | [LinkedIn](https://www.linkedin.com/in/badrishananth/) |
-| <img width="400" height="400" src="/profiles/Aditya.png" /><br>**Aditya Vemuri** | [LinkedIn](https://www.linkedin.com/in/aditya-vemuri-571838214/) |
+| <img width="250" height="400" src="/Group42-Three-Bet/profiles/Adithya.jpg" /><br>**Adithya Bollu** | [LinkedIn](https://linkedin.com/in/adithya-bollu) |
+| <img width="400" height="400" src="/Group42-Three-Bet/profiles/Badrish.png" /><br>**Badrish Ananth** | [LinkedIn](https://www.linkedin.com/in/badrishananth/) |
+| <img width="400" height="400" src="/Group42-Three-Bet/profiles/Aditya.png" /><br>**Aditya Vemuri** | [LinkedIn](https://www.linkedin.com/in/aditya-vemuri-571838214/) |
