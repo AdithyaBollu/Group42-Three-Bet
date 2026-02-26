@@ -19,4 +19,6 @@ https://github.com/AdithyaBollu/Group42-Three-Bet
 [ask Badrish] 
 
 ## LinkedIns + Pics
-[create 3 person table]
+| Profile | LinkedIn |
+|---------|---------|
+| ![My Image](https://media0.giphy.com/media/v1.Y2lkPTZjMDliOTUyNmNlcjBpNXR3MDJxbmlwdzMxeXEzeHBxcHFlaW81eHJ2Y210OHhwciZlcD12MV9naWZzX3NlYXJjaCZjdD1n/uERh6XQuSauCDkqgWM/giphy.gif) | [LinkedIn](https://linkedin.com/in/adithya-bollu) |
