@@ -112,8 +112,11 @@ Default hyperparameter values planned to follow were provided by Claude, but we 
 ## Current Status Evaluation
 
 ### Quantitative
-<img src="../../graphs.png" alt="Training Graphs">
+<img src="https://github.com/AdithyaBollu/Group42-Three-Bet/blob/2be5e3d5462332db534f4fc6e00534f855ba1858/graphs.png" alt="Training Graphs">
+
+
 ### Qualitative
+Early in training, the agent exhibited a clear bias toward calling almost every action regardless of hand strength or board texture, suggesting it had not yet learned to differentiate between strong and weak holdings. As training progressed, we began observing more  appropriate behavior: the agent started checking back hands on dry, uncoordinated boards rather than blindly continuation betting, and demonstrated a greater willingness to call down with medium-strength holdings against potential bluffs. While the agent is still far from optimal and exhibits exploitable tendencies, the  shift from undifferentiated calling to something resembling genuine decision making represents a meaningful improvement and suggests the policy is beginning to capture some of the underlying details of poker strategy.
 
 ## Remaining Goals and Roadmap
 
@@ -122,7 +125,10 @@ Our current prototype is limited in two significant ways: the MCCFR agent has no
 The challenges we anticipate are substantial. Getting MCCFR to converge in a full poker game tree — even with abstraction — is computationally expensive, and information set explosion remains a real risk of becoming a roadblocking obstacle; we plan to address this through aggressive card and bet abstraction and may fall back to a smaller game variant if necessary. The hybrid weighting experiments also introduce a search problem with no obvious conclusion beyond head-to-head win rate, which is not entirely reliable in poker. We hope to mitigate this by using exploitability as a secondary metric where possible. Finally, building a functional GUI and coaching interface within the quarter is ambitious, and if time is short we will prioritize the agent quality and evaluation over the interface, treating the GUI as a stretch goal rather than a core deliverable.
 
 ## Resources Used
-
+1. CS175 Slides (especially for understanding PPO models)
+2. https://www.youtube.com/watch?v=5P7I-xPq8u8 (more PPO intro material)
+3. https://www.youtube.com/watch?v=iU14jOue9Dk (MCCFR for Poker)
+4. https://www.youtube.com/watch?v=ygDt_AumPr0 (Intro to CFR)
 
 ## AI Usage
 Our primary usage of AI can be broken down into 4 main areas:
