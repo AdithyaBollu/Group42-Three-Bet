@@ -39,9 +39,9 @@ $$L = L^{\text{CLIP}} - c_1 \, \mathbb{E}_t\left[(V_\theta(s_t) - R_t)^2\right] 
 
 where $R_t = A_t + V(s_t)$ are the bootstrapped returns. To better handle poker's high reward variance, we use a larger critic network (layers: 256–256–256) than the actor (128–128).
 
-To stabilize the non-stationary multi-agent setting, we use snapshot self-play: every 50,000 steps the current agent is saved, and the opponent is sampled from the 10 most recent snapshots, 
-refreshing every 300 episodes. This approximates fictitious self-play and creates a curriculum of progressively stronger opponents. 
-We've trained it for a total of 10,000,000 environment steps and evaluate every 10,000 steps over 200 games using rolling win rate.
+To stabilize the non-stationary multi-agent setting, we use snapshot self-play: every 50,000 steps the current agent is saved, and the opponent is randomly sampled from previous snapshots, 
+refreshing every 50k steps. This approximates fictitious self-play and creates a curriculum of progressively stronger opponents. 
+We've trained it for a total of 1,000,000 environment steps and evaluate every 5,000 steps using a rolling win rate.
 
 ### Hyperparameters
 
