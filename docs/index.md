@@ -22,7 +22,6 @@ https://github.com/AdithyaBollu/Group42-Three-Bet
 - [Intro to CFR](https://www.youtube.com/watch?v=ygDt_AumPr0)
 
 ## LinkedIns + Pics
-## LinkedIns + Pics
 
 <table>
   <tr>
