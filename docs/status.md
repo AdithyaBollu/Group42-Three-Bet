@@ -103,7 +103,7 @@ Default hyperparameter values were initially sourced from Claude AI, but we plan
 ## Current Status Evaluation
 
 ### Quantitative
-<img src="/Group42-Three-Bet/assets/graphs.png" />
+<img width="1039" height="356" src="/Group42-Three-Bet/assets/graphs.png" />
 
 Looking at our graphs, we see that the approx KL and clip fraction are coming down, which means the policy is stabilizing as there are less "big updates" to the policy. Additionally, this is also visible through the clip fraction as less clips indicate that the model is stabilizing. However, the train entropy loss is starting to increase, which indicates that the model is becoming more deterministic rather than completely stochastic.
 
