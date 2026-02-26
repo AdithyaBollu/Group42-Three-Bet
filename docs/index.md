@@ -22,8 +22,23 @@ https://github.com/AdithyaBollu/Group42-Three-Bet
 - [Intro to CFR](https://www.youtube.com/watch?v=ygDt_AumPr0)
 
 ## LinkedIns + Pics
-| Profile | LinkedIn |
-|---------|---------|
-| <img width="250" height="400" src="/Group42-Three-Bet/assets/Adithya.jpg" /><br>**Adithya Bollu** | [LinkedIn](https://linkedin.com/in/adithya-bollu) |
-| <img width="400" height="400" src="/Group42-Three-Bet/assets/Badrish.png" /><br>**Badrish Ananth** | [LinkedIn](https://www.linkedin.com/in/badrishananth/) |
-| <img width="400" height="400" src="/Group42-Three-Bet/assets/Aditya.png" /><br>**Aditya Vemuri** | [LinkedIn](https://www.linkedin.com/in/aditya-vemuri-571838214/) |
+## LinkedIns + Pics
+
+<table>
+  <tr>
+    <th>Profile</th>
+    <th>LinkedIn</th>
+  </tr>
+  <tr>
+    <td><img width="250" height="400" src="/Group42-Three-Bet/assets/Adithya.jpg" /><br><strong>Adithya Bollu</strong></td>
+    <td><a href="https://linkedin.com/in/adithya-bollu">LinkedIn</a></td>
+  </tr>
+  <tr>
+    <td><img width="400" height="400" src="/Group42-Three-Bet/assets/Badrish.png" /><br><strong>Badrish Ananth</strong></td>
+    <td><a href="https://www.linkedin.com/in/badrishananth/">LinkedIn</a></td>
+  </tr>
+  <tr>
+    <td><img width="400" height="400" src="/Group42-Three-Bet/assets/Aditya.png" /><br><strong>Aditya Vemuri</strong></td>
+    <td><a href="https://www.linkedin.com/in/aditya-vemuri-571838214/">LinkedIn</a></td>
+  </tr>
+</table>
