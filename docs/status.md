@@ -4,7 +4,9 @@ title: Status
 ---
 
 ## Video Status Update
-<iframe width="752" height="432" src="https://www.youtube.com/watch?v=k85MC-JA3IM" title="AI Learns How To Play Poker" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
+<iframe width="560" height="315" src="https://www.youtube.com/embed/k85MC-JA3IM?si=YtuGX8xjCXsMSBd0" title="YouTube video player" frameborder="0" allow="accelerometer; autoplay; clipboard-write; encrypted-media; gyroscope; picture-in-picture; web-share" referrerpolicy="strict-origin-when-cross-origin" allowfullscreen></iframe>
+
 ## Environment Setup
 
 Our environment is a two-player heads-up No-Limit Texas Hold'em poker game built on a standard 52-card deck. Each hand proceeds through the four standard betting rounds — preflop, flop, turn, and river — with the two players alternating who posts the small and big blind each hand to ensure neither player has a persistent positional advantage. At each decision point, the acting player chooses from six discrete actions: fold, check, raise quarter pot, raise half pot, raise full pot, and all-in. This discretized actions keeps the action space tractable for learning while still capturing the core strategic decisions of the standard No-Limit Texas Hold'em.
