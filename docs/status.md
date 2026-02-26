@@ -115,12 +115,6 @@ Our current prototype is limited in two significant ways: the MCCFR agent has no
 
 The challenges we anticipate are substantial. Getting MCCFR to converge in a full poker game tree — even with abstraction — is computationally expensive, and information set explosion remains a real risk of becoming a roadblocking obstacle; we plan to address this through aggressive card and bet abstraction and may fall back to a smaller game variant if necessary. The hybrid weighting experiments also introduce a search problem with no obvious conclusion beyond head-to-head win rate, which is not entirely reliable in poker. We hope to mitigate this by using exploitability as a secondary metric where possible. Finally, building a functional GUI and coaching interface within the quarter is ambitious, and if time is short we will prioritize agent quality and evaluation over the interface, treating the GUI as a stretch goal rather than a core deliverable.
 
-## Resources Used
-1. CS175 Slides (especially for understanding PPO models)
-2. https://www.youtube.com/watch?v=5P7I-xPq8u8 (more PPO intro material)
-3. https://www.youtube.com/watch?v=iU14jOue9Dk (MCCFR for Poker)
-4. https://www.youtube.com/watch?v=ygDt_AumPr0 (Intro to CFR)
-
 ## AI Usage
 Our primary usage of AI can be broken down into 4 main areas:
 1. Highlighting environment inconsistencies during debugging and ensuring proper utilization of CPU during training
