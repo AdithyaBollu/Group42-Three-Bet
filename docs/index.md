@@ -16,7 +16,10 @@ With a mix of PPO self-play and Monte Carlo CFR techniques/policies, we've devel
 https://github.com/AdithyaBollu/Group42-Three-Bet
 
 ## Resources
-[ask Badrish] 
+- CS175 Slides (especially for understanding PPO models)
+- [PPO Intro Material](https://www.youtube.com/watch?v=5P7I-xPq8u8)
+- [MCCFR for Poker](https://www.youtube.com/watch?v=iU14jOue9Dk)
+- [Intro to CFR](https://www.youtube.com/watch?v=ygDt_AumPr0)
 
 ## LinkedIns + Pics
 | Profile | LinkedIn |
