@@ -5,10 +5,15 @@ title: Status
 
 ## Video Status Update
 
+## Environment Setup
+
+Our environment is a two-player heads-up No-Limit Texas Hold'em poker game built on a standard 52-card deck. Each hand proceeds through the four standard betting rounds — preflop, flop, turn, and river — with the two players alternating who posts the small and big blind each hand to ensure neither player has a persistent positional advantage. At each decision point, the acting player chooses from six discrete actions: fold, check, raise quarter pot, raise half pot, raise full pot, and all-in. This discretized actions keeps the action space tractable for learning while still capturing the core strategic decisions of the standard No-Limit Texas Hold'em.
+
+To limit the size of the state space, both players' stacks reset to a fixed starting amount at the beginning of every hand. This is a deliberate simplification: in a fully-fledged tournament, stack depth varies continuously and dramatically affects optimal strategy — short stacks incentivize shoving, deep stacks enable complex implied-odds play. By resetting stacks each hand, we ensure the agent is always operating in the same effective stack-to-pot ratio regime, making the learning problem stationary and preventing the agent from needing to generalize across wildly different stack dynamics. As a result, our agent is explicitly optimized for a single isolated heads-up hand of poker rather than a full session, meaning the learned strategy reflects standard fixed-stack win-rate rather than long-run bank maximization.
 
 ## Proximal Policy Optimization With Masking
 
-We train our poker agent using PPO, an on-policy actor–critic algorithm that improves a stochastic policy while constraining update size. This stability is critical in poker due to high reward variance, a non-stationary multi-agent environment, and the need to prevent illegal actions. Our setup pairs PPO with action masking and snapshot-based self-play.
+We train our poker agent using PPO, an on-policy actor–critic algorithm that improves a stochastic policy while constraining update size. This stability is critical in poker due to high reward variance, a non-stationary multi-agent environment, and the need to prevent illegal actions. Our setup pairs PPO with action masking and snapshot-based self-play. 
 
 ### Method
 
@@ -34,7 +39,7 @@ $$L = L^{\text{CLIP}} - c_1 \, \mathbb{E}_t\left[(V_\theta(s_t) - R_t)^2\right] 
 
 where $R_t = A_t + V(s_t)$ are the bootstrapped returns. To better handle poker's high reward variance, we use a larger critic network (layers: 256–256–256) than the actor (128–128).
 
-To stabilize the non-stationary multi-agent setting, we use **snapshot self-play**: every 50,000 steps the current agent is saved, and the opponent is sampled from the 10 most recent snapshots, 
+To stabilize the non-stationary multi-agent setting, we use snapshot self-play: every 50,000 steps the current agent is saved, and the opponent is sampled from the 10 most recent snapshots, 
 refreshing every 300 episodes. This approximates fictitious self-play and creates a curriculum of progressively stronger opponents. 
 We've trained it for a total of 10,000,000 environment steps and evaluate every 10,000 steps over 200 games using rolling win rate.
 
@@ -102,19 +107,24 @@ Default hyperparameter values planned to follow were provided by Claude, but we 
 | Strategy averaging | Full average | May test linear averaging |
 | Exploitability eval frequency | Every 10,000 iterations | Fixed |
 
-# Current Status Evaluation
+## Current Status Evaluation
 
-## Remaining Goals / Roadmap
+### Quantitative
 
-Looking ahead, our primary objective is to get the MCCFR agent fully trained and producing a converged, stable strategy. Once both the PPO and MCCFR agents are independently stable, 
-we plan to investigate hybrid  approaches that combine their outputs — PPO brings adaptive intuition shaped by its self-play experience, 
-while MCCFR contributes its game-theoretic Nash equilibrium reasoning. We intend to experiment with different weighting schemes for merging the two agents' action distributions, 
-ranging from fixed convex combinations to learned or state-conditional weightings, with the goal of identifying configurations that outperform either agent in isolation.
+### Qualitative
 
-Beyond the core agents, we aim to wrap the final bot in a full GUI that allows a human player to sit down and play poker directly against it. This would make the 
-project accessible far beyond a research context, turning it into a genuinely playable and demonstrable product. Alongside the gameplay experience, we would like to incorporate 
-a real-time advice and coaching layer — drawing on the agent's internal value estimates and probabilities to offer the human player feedback on their decisions, 
-such as flagging folds that had positive expected value or highlighting missed bluffing opportunities, most likely via a plugin with an opensource LLM. The combination of a 
-strong hybrid agent and an interactive coaching interface would transform the project from a training experiment into a practical tool for understanding and improving poker strategy.
+## Remaining Goals and Roadmap
 
-# Resources Used
+Our current prototype is limited in two significant ways: the MCCFR agent has not yet produced a converged strategy, and the two agents exist entirely independently with no mechanism for combining them. Our goals for the remainder of the quarter are therefore to first get MCCFR fully trained and validated via exploitability metrics, then investigate hybrid  approaches that merge the two agents' action distributions with the goal of producing a bot that outperforms either agent on its own. We also intend to perform more rigorous comparative evaluation between PPO, MCCFR, and the hybrid, which our current results do not yet support. Finally, time permitting, we would like to wrap the finished agent in a playable GUI with a real-time coaching layer that draws on the agent's value estimates to offer feedback on human decisions, potentially via an open-source LLM plugin.
+
+The challenges we anticipate are substantial. Getting MCCFR to converge in a full poker game tree — even with abstraction — is computationally expensive, and information set explosion remains a real risk of becoming a roadblocking obstacle; we plan to address this through aggressive card and bet abstraction and may fall back to a smaller game variant if necessary. The hybrid weighting experiments also introduce a search problem with no obvious conclusion beyond head-to-head win rate, which is not entirely reliable in poker. We hope to mitigate this by using exploitability as a secondary metric where possible. Finally, building a functional GUI and coaching interface within the quarter is ambitious, and if time is short we will prioritize the agent quality and evaluation over the interface, treating the GUI as a stretch goal rather than a core deliverable.
+
+## Resources Used
+
+
+## AI Usage
+Our primary usage of AI can be broken down into 4 main areas:
+1. Highlighting environment inconsistencies during debugging and ensuring proper utilization of CPU during training
+2. Providing us with higher level overviews of the models + answering any followup questions that we might have had
+3. Giving us baseline hyperparameters with which to iterate off of
+4. Cleaning up the prose/formatting (especially the equations) in this document + rectifying errors & inconsistencies that may have been made
