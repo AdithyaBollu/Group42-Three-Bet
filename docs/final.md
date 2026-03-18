@@ -101,8 +101,13 @@ Default hyperparameter values were initially sourced from Claude AI, but we plan
 ## Current Status Evaluation
 
 ### Quantitative
-<img width="1200" height="400" src="/Group42-Three-Bet/assets/Snapshot_Evaluations.png" />
-<img width="1200" height="400" src="/Group42-Three-Bet/assets/Fictitious_Evaluations.png" />
+#### Snapshot Self-Play Evaluation
+<img width="1400" height="400" src="/Group42-Three-Bet/assets/Snapshot_Evaluations.png" />
+Looking at our grpahs we can see that the reward mean shows relatively small fluctuations across training, with the smoothed value sitting at approximately 0.005 — slightly positive but close to zero. This suggests the agent is marginally above a neutral reward baseline, though there is still room for improvement in terms of earning consistently higher rewards. The value loss shows a steady decrease from ~0.65 to ~0.45, indicating the critic is becoming better calibrated at estimating future returns, which is a positive sign that learning is progressing and a strategy is being devised.
+Moving on we can see our evaluation for our model where we played 10,000 hands against 
+
+
+<img width="1400" height="400" src="/Group42-Three-Bet/assets/Fictitious_Evaluations.png" />
 <img width="700" height="500" src="/Group42-Three-Bet/assets/MCCFR_Evalutions.png" />
 
 Looking at our graphs, we see that the approx KL and clip fraction are coming down, which means the policy is stabilizing as there are less "big updates" to the policy. Additionally, this is also visible through the clip fraction as less clips indicate that the model is stabilizing. However, the train entropy loss is starting to increase, which indicates that the model is becoming more deterministic rather than completely stochastic.
