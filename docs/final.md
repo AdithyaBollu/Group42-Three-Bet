@@ -1,3 +1,9 @@
+---
+layout: default
+title: Final
+---
+
+
 ## Environment Setup
 
 Our environment is a two-player heads-up No-Limit Texas Hold'em poker game built on a standard 52-card deck. Each hand proceeds through the four standard betting rounds — preflop, flop, turn, and river — with the two players alternating who posts the small and big blind each hand to ensure neither player has a persistent positional advantage. At each decision point, the acting player chooses from six discrete actions: fold, check, raise quarter pot, raise half pot, raise full pot, and all-in. This discretized action space keeps the action space tractable for learning while still capturing the core strategic decisions of standard No-Limit Texas Hold'em.
