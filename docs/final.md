@@ -3,6 +3,17 @@ layout: default
 title: Final
 ---
 
+# Project Summary
+We chose poker as the focus for this project because it’s a fun, familiar, and surprisingly deep game that naturally captures a lot of interesting decision-making challenges. Most people already have some general intuition about poker — betting, folding, or bluffing — so it’s easy to understand what the agent is trying to do and why its behavior matters. At the same time, poker isn’t just a simple game of luck or fixed rules; it’s a competitive setting where strategy, adaptation, and analysis all play a role. That made it a really engaging domain to explore with how intelligent agents can learn and improve over time.
+
+
+Poker is definitely not a trivial problem to solve. One of the biggest challenges is that it’s an imperfect information game, meaning players don’t have access to all the relevant information (like the opponent’s cards). On top of that, there’s randomness from the card draws, a huge number of possible game states, and the need to think ahead across multiple rounds of betting. A good poker strategy also involves unpredictability to avoid being exploited, so the agent can’t just follow a fixed set of rules. All of this makes it really hard to design a strong strategy by hand, since the “best” decision often depends on hidden information and long-term outcomes rather than immediate results. Additionally, poker naturally fits into a state → action → reward framework: the agent observes the current game state (cards, bets, position), takes an action (fold, call, raise), and eventually receives a reward based on the outcome of the hand. This structure makes it especially well suited for reinforcement learning, where the agent can learn effective strategies over time by optimizing for long-term expected reward.
+
+
+This is where machine learning, especially reinforcement learning, becomes a great fit. Instead of trying to hard-code a strategy, we can let the agent learn by playing millions of games and gradually figuring out what works and what doesn’t. Reinforcement learning is designed for exactly this kind of setup, where an agent interacts with an environment, makes decisions, and improves based on rewards over time. In poker, this allows the agent to pick up on patterns like when betting is profitable, how to respond to different opponent behaviors, and even when bluffing makes sense. It also helps handle the complexity of the game by learning general strategies instead of memorizing every possible situation. Overall, ML and RL specifically gave us the tools to tackle a problem that’s too complex and uncertain to solve ourselves and produce strategies that were both  effective and genuinely interesting to analyze.
+
+
+
 # Approach
 
 ## Environment Setup
