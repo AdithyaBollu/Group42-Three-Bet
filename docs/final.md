@@ -111,8 +111,7 @@ Default hyperparameter values were initially sourced from Claude AI, but we plan
 
 ## Current Status Evaluation
 
-### Quantitative
-#### Snapshot Self-Play Evaluation
+### Snapshot Self-Play Evaluation
 <img width="1400" height="400" src="/Group42-Three-Bet/assets/Snapshot_Evaluations.png" />
 
 Looking at our graphs we can see that the reward mean shows relatively small fluctuations across training, with the smoothed value sitting at approximately 0.05 — slightly positive but close to zero. This suggests the agent is marginally above a neutral reward baseline, though there is still room for improvement in terms of earning consistently higher rewards. The value loss shows a steady decrease from ~0.65 to ~0.45, indicating the critic is becoming better calibrated at estimating future returns, which is a positive sign that learning is progressing and a strategy is being devised.
@@ -126,27 +125,30 @@ Model B, by contrast, won more hands in total but generated a negative reward pe
 In summary, Model A's behavior reflects a more mature and strategically sound policy, prioritizing quality of play over quantity. The improvement in reward per hand over the snapshot is a strong indicator that the model is learning meaningful game strategy rather than simply maximizing hand participation.
 
 
-#### Fictitious Self-Play Evaluation
+### Fictitious Self-Play Evaluation
 <img width="1400" height="400" src="/Group42-Three-Bet/assets/Fictitious_Evaluations.png" />
 
 Looking at the updated graphs we can see that the reward mean continues to show small fluctuations across training, remaining tightly bounded between approximately -0.05 and 0.05, with the smoothed value sitting slightly above zero. In the context of a poker environment, this is a strong indication of stability, suggesting the agent is maintaining performance close to a neutral baseline while avoiding large negative outcomes, though there is still room for improvement in achieving more consistently positive rewards. The value loss shows a continued steady decrease from around ~0.7 to ~0.35–0.4, indicating the critic is becoming increasingly well calibrated at estimating future returns, which is a positive sign that learning is stabilizing and a more refined strategy is being developed.
 
+In our evaluation, we ran 10,000 hands between our two self play agents (Agent A and Agent B). 
+
+Both Model A and Model B have very similar metrics in terms of win percentage and average reward, with both agents hovering close to a 50% win rate and near-zero average chips. However, Model A appears to be doing slightly better overall, with a marginally higher average chip gain (+0.02 vs -0.02) and only a small deficit in total wins compared to losses. These near-identical statistics demonstrate how the two agents are converging toward a Nash equilibrium, where neither agent can significantly outperform the other.
+
+Breaking it down further, we can see some positional differences. Model A performs worse as the big blind (44.5% win rate) but compensates with stronger performance as the small blind (52.2%), whereas Model B shows a similar pattern but slightly more polarized, doing better as the small blind (53.0%) and worse as the big blind (46.8%)
+
+Overall, the symmetry in both win rates and rewards across positions suggests that both agents have learned balanced strategies and are effectively countering each other. The slight edge seen in Model A is minimal and likely within the variance expected over 10,000 hands, further supporting the conclusion that both models are approaching equilibrium-like play rather than one clearly dominating the other.
 
 
 
-#### MC CFR Evaluation
-<img width="700" height="500" src="/Group42-Three-Bet/assets/MCCFR_Evalutions.png" />
+### MC CFR Evaluation
+<img width="900" height="500" src="/Group42-Three-Bet/assets/MCCFR_Evalutions.png" />
 
-Looking at our graphs, we see that the approx KL and clip fraction are coming down, which means the policy is stabilizing as there are less "big updates" to the policy. Additionally, this is also visible through the clip fraction as less clips indicate that the model is stabilizing. However, the train entropy loss is starting to increase, which indicates that the model is becoming more deterministic rather than completely stochastic.
+For our MC CFR evaluation we ran 10,000 hands between our ficitious self-play Agent A and our CFR model.
 
-### Qualitative
-Early in training, the agent exhibited a clear bias toward calling almost every action regardless of hand strength or board texture, suggesting it had not yet learned to differentiate between strong and weak holdings. As training progressed, we began observing more appropriate behavior: the agent started checking back hands on dry, uncoordinated boards rather than blindly continuation betting, and demonstrated a greater willingness to call down with medium-strength holdings against potential bluffs. While the agent is still far from optimal and exhibits exploitable tendencies, the shift from undifferentiated calling to something resembling genuine decision making represents a meaningful improvement and suggests the policy is beginning to capture some of the underlying structure of poker strategy.
+From the results we can see that MC CFR’s win rate is near 50% (49.5%), but it is consistently losing in terms of average reward against Agent A (-1.65 vs +1.65). This indicates that while MC CFR is able to win a comparable number of hands, the pots it loses tend to be larger, suggesting suboptimal decision-making in higher-stakes situations. This shows that our MC CFR model is still exploitable and not yet fully converged. We need to keep training it for longer ( We were unable to do so due to time constraints).
 
-## Remaining Goals and Roadmap
 
-Our current prototype is limited in two significant ways: the MCCFR agent has not yet produced a converged strategy, and the two agents exist entirely independently with no mechanism for combining them. Our goals for the remainder of the quarter are therefore to first get MCCFR fully trained and validated via exploitability metrics, then investigate hybrid approaches that merge the two agents' action distributions with the goal of producing a bot that outperforms either agent on its own. We also intend to perform more rigorous comparative evaluation between PPO, MCCFR, and the hybrid, which our current results do not yet support. Finally, time permitting, we would like to wrap the finished agent in a playable GUI with a real-time coaching layer that draws on the agent's value estimates to offer feedback on human decisions, potentially via an open-source LLM plugin.
-
-The challenges we anticipate are substantial. Getting MCCFR to converge in a full poker game tree — even with abstraction — is computationally expensive, and information set explosion remains a real risk of becoming a roadblocking obstacle; we plan to address this through aggressive card and bet abstraction and may fall back to a smaller game variant if necessary. The hybrid weighting experiments also introduce a search problem with no obvious conclusion beyond head-to-head win rate, which is not entirely reliable in poker. We hope to mitigate this by using exploitability as a secondary metric where possible. Finally, building a functional GUI and coaching interface within the quarter is ambitious, and if time is short we will prioritize agent quality and evaluation over the interface, treating the GUI as a stretch goal rather than a core deliverable.
+## Tools Used
 
 ## AI Usage
 Our primary usage of AI can be broken down into 4 main areas:
