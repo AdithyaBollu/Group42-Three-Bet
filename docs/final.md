@@ -103,8 +103,15 @@ Default hyperparameter values were initially sourced from Claude AI, but we plan
 ### Quantitative
 #### Snapshot Self-Play Evaluation
 <img width="1400" height="400" src="/Group42-Three-Bet/assets/Snapshot_Evaluations.png" />
-Looking at our grpahs we can see that the reward mean shows relatively small fluctuations across training, with the smoothed value sitting at approximately 0.005 — slightly positive but close to zero. This suggests the agent is marginally above a neutral reward baseline, though there is still room for improvement in terms of earning consistently higher rewards. The value loss shows a steady decrease from ~0.65 to ~0.45, indicating the critic is becoming better calibrated at estimating future returns, which is a positive sign that learning is progressing and a strategy is being devised.
-Moving on we can see our evaluation for our model where we played 10,000 hands against 
+Looking at our grpahs we can see that the reward mean shows relatively small fluctuations across training, with the smoothed value sitting at approximately 0.05 — slightly positive but close to zero. This suggests the agent is marginally above a neutral reward baseline, though there is still room for improvement in terms of earning consistently higher rewards. The value loss shows a steady decrease from ~0.65 to ~0.45, indicating the critic is becoming better calibrated at estimating future returns, which is a positive sign that learning is progressing and a strategy is being devised.
+
+In our evaluation, we ran 10,000 hands between our most recent model (Model A) and a previous snapshot (Model B). 
+
+Model A achieved a lower overall win rate, but demonstrated a significantly higher reward per hand — finishing profitable. This indicates that Model A has learned a more selective strategy, choosing to fold unfavorable hands rather than playing every opportunity. This is a hallmark of sound poker/card game strategy, where knowing when not to play is just as important as knowing when to play.
+
+Model B, by contrast, won more hands in total but generated a negative reward per hand, ultimately losing money overall. This suggests Model B developed an aggressive, indiscriminate strategy — playing most or all hands regardless of their strength. While this inflates the win count, it leads to poor expected value over time, as the losses on weak hands outweigh the gains.
+
+In summary, Model A's behavior reflects a more mature and strategically sound policy, prioritizing quality of play over quantity. The improvement in reward per hand over the snapshot is a strong indicator that the model is learning meaningful game strategy rather than simply maximizing hand participation.
 
 
 <img width="1400" height="400" src="/Group42-Three-Bet/assets/Fictitious_Evaluations.png" />
