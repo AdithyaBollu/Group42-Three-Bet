@@ -103,6 +103,7 @@ Default hyperparameter values were initially sourced from Claude AI, but we plan
 ### Quantitative
 #### Snapshot Self-Play Evaluation
 <img width="1400" height="400" src="/Group42-Three-Bet/assets/Snapshot_Evaluations.png" />
+
 Looking at our grpahs we can see that the reward mean shows relatively small fluctuations across training, with the smoothed value sitting at approximately 0.05 — slightly positive but close to zero. This suggests the agent is marginally above a neutral reward baseline, though there is still room for improvement in terms of earning consistently higher rewards. The value loss shows a steady decrease from ~0.65 to ~0.45, indicating the critic is becoming better calibrated at estimating future returns, which is a positive sign that learning is progressing and a strategy is being devised.
 
 In our evaluation, we ran 10,000 hands between our most recent model (Model A) and a previous snapshot (Model B). 
