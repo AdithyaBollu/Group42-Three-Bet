@@ -326,19 +326,6 @@ From the results we can see that MC CFR’s win rate is near 50% (49.5%), but it
 ---
 
 
-
-# Summary
-
-This framework enables a direct comparison between:
-- **Reinforcement learning approaches (PPO variants)**
-- **Game-theoretic methods (MCCFR)**
-
-highlighting tradeoffs between:
-- empirical performance  
-- stability  
-- theoretical guarantees  
-
-
 ## Tools Used
 - CS175 Slides (especially for understanding PPO models)
 - [PPO Intro Material](https://www.youtube.com/watch?v=5P7I-xPq8u8)
