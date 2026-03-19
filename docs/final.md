@@ -287,6 +287,10 @@ $$
 
 ## Current Status Evaluation
 
+### Difficulty in Evaluating Poker
+Evaluating poker agents is inherently challenging due to the high-variance and imperfect-information nature of the game. Outcomes in poker are influenced not only by strategy but also by stochastic elements such as card distribution, meaning that short-term results (e.g., win rate over a limited number of hands) may not accurately reflect true performance. Additionally, because we don't have access to full game state information, decisions are made under uncertainty, making it difficult to directly measure policy quality. As a result, we rely on aggregating statistical metrics such as average reward per hand, win rate, and value function loss, which provide the most accessible and objective basis for comparing and analyzing agent performance over large sample sizes.
+
+
 ### Snapshot Self-Play Evaluation
 <img width="1400" height="400" src="/Group42-Three-Bet/assets/Snapshot_Evaluations.png" />
 
@@ -322,6 +326,7 @@ Overall, the symmetry in both win rates and rewards across positions suggests th
 For our MC CFR evaluation we ran 10,000 hands between our ficitious self-play Agent A and our CFR model.
 
 From the results we can see that MC CFR’s win rate is near 50% (49.5%), but it is consistently losing in terms of average reward against Agent A (-1.65 vs +1.65). This indicates that while MC CFR is able to win a comparable number of hands, the pots it loses tend to be larger, suggesting suboptimal decision-making in higher-stakes situations. This shows that our MC CFR model is still exploitable and not yet fully converged. We need to keep training it for longer ( We were unable to do so due to time constraints).
+
 
 ---
 
