@@ -341,10 +341,3 @@ From the results we can see that MC CFR’s win rate is near 50% (49.5%), but it
 - Poker Kit py.pi
 - Claude
 
-
-## AI Usage
-Our primary usage of AI can be broken down into 4 main areas:
-1. Highlighting environment inconsistencies during debugging and ensuring proper utilization of CPU during training
-2. Providing us with higher level overviews of the models and answering any followup questions we had
-3. Giving us baseline hyperparameters with which to iterate from
-4. Cleaning up prose and formatting (especially equations) in this document and fixing errors and inconsistencies
