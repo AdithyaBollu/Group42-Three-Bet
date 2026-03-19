@@ -1,22 +1,3 @@
-"""
-train2.py
----------
-Trains a MaskablePPO agent on FixedPokerEnvironment (poker_env_3).
-Action masking eliminates illegal moves from the policy logits before
-sampling, so the agent never wastes gradient signal on impossible actions.
-
-Usage
------
-    python train2.py                   # 1 000 000 timesteps (default)
-    python train2.py --steps 2000000   # longer run
-    python train2.py --steps 500000 --snapshot-freq 50000
-
-Snapshots
----------
-A snapshot is saved every --snapshot-freq steps so the self-play opponent
-pool stays fresh. Final model is saved as poker_masked_ppo_final.zip.
-"""
-
 import argparse
 import os
 
@@ -31,11 +12,10 @@ from poker_env_3 import FixedPokerEnvironment
 from stats import _empty, _record, get_sorted_snapshots, play_one_hand
 
 
-# ── helpers ──────────────────────────────────────────────────────────
+#helpers
 
 def mask_fn(env) -> np.ndarray:
-    """Called by ActionMasker every step to get the legal-action boolean mask."""
-    # Unwrap Monitor (or any other wrapper) to reach FixedPokerEnvironment
+   
     inner = env
     while hasattr(inner, "env"):
         inner = inner.env
@@ -43,7 +23,7 @@ def mask_fn(env) -> np.ndarray:
 
 
 def make_env(snapshot_dir: str = "./masked_snaps", player_type: str = "A"):
-    """Factory for DummyVecEnv — wraps env with ActionMasker."""
+    
     def _init():
         env = FixedPokerEnvironment(
             buy_in=100.0,
@@ -54,15 +34,15 @@ def make_env(snapshot_dir: str = "./masked_snaps", player_type: str = "A"):
             snapshot_pool_size=10,
             player_type=player_type,
         )
-        env = Monitor(env)   # populates info["episode"] at episode end
+        env = Monitor(env)   
         return ActionMasker(env, mask_fn)
     return _init
 
 
-# ── callbacks ─────────────────────────────────────────────────────────
+
 
 class SnapshotCallback(BaseCallback):
-    """Saves a model snapshot every `save_freq` steps for the opponent pool."""
+    
 
     def __init__(self, save_freq: int, snapshot_dir: str, verbose: int = 0):
         super().__init__(verbose)
@@ -83,7 +63,7 @@ class SnapshotCallback(BaseCallback):
 
 
 class WinLossCallback(BaseCallback):
-    """Prints rolling win/loss/push stats every `print_every` episodes."""
+    
 
     WINDOW = 500  # rolling window size
 
@@ -95,12 +75,10 @@ class WinLossCallback(BaseCallback):
         self.total_losses  = 0
         self.total_pushes  = 0
         self.total_reward  = 0.0
-        self._window: list[float] = []  # rolling reward buffer
-
+        self._window: list[float] = []  
     def _on_step(self) -> bool:
         for i, info in enumerate(self.locals.get("infos", [])):
-            # SB3 DummyVecEnv stores episode summary in info["episode"] at
-            # the terminal step: {"r": total_reward, "l": episode_length}
+            
             ep_info = info.get("episode")
             if ep_info is None:
                 continue
@@ -116,7 +94,7 @@ class WinLossCallback(BaseCallback):
             else:            
                 self.total_pushes += 1
 
-            # rolling window
+ 
             self._window.append(reward)
             if len(self._window) > self.WINDOW:
                 self._window.pop(0)
@@ -137,13 +115,7 @@ class WinLossCallback(BaseCallback):
 
 
 class EvalVsSnapshotCallback(BaseCallback):
-    """
-    Every `eval_freq` training steps:
-      - loads the latest snapshot from snapshot_dir
-      - plays `n_eval_hands` hands (alternating seats) against the current model
-      - appends a line to `log_file`
-      - saves/updates `plot_file` with win% and avg-chip charts
-    """
+
 
     def __init__(self, eval_freq: int, snapshot_dir: str,
                  n_eval_hands: int = 300,
@@ -180,8 +152,8 @@ class EvalVsSnapshotCallback(BaseCallback):
         env._opponent_model = None
 
         overall = _empty()
-        bb_rec  = _empty()   # agent sat in seat 0 (BB)
-        sb_rec  = _empty()   # agent sat in seat 1 (SB)
+        bb_rec  = _empty()   
+        sb_rec  = _empty()   
 
         for idx in range(self.n_eval_hands):
             seat_a = idx % 2
@@ -200,14 +172,14 @@ class EvalVsSnapshotCallback(BaseCallback):
         avg   = overall["chip_sum"] / n
         snap_name = os.path.basename(latest)
 
-        # ── TensorBoard ───────────────────────────────────────────
+        
         self.logger.record("eval/win_pct",    wp)
         self.logger.record("eval/bb_win_pct", bb_wp)
         self.logger.record("eval/sb_win_pct", sb_wp)
         self.logger.record("eval/avg_chips",  avg)
         self.logger.dump(self.num_timesteps)
 
-        # ── text log ──────────────────────────────────────────────
+    
         with open(self.log_file, "a", encoding="utf-8") as f:
             f.write(f"{self.num_timesteps:>10}  {wp:>6.1f}%  {bb_wp:>6.1f}%  "
                     f"{sb_wp:>6.1f}%  {avg:>+10.2f}  {snap_name}\n")
@@ -233,16 +205,13 @@ DEFAULTS = dict(
 )
 
 
-# ── main training function ────────────────────────────────────────────
 
 def train(total_timesteps: int, snapshot_freq: int, snapshot_dir: str, resume: str | None = None):
 
     os.makedirs(snapshot_dir + "A", exist_ok=True)
 
-    # ── 1. vectorised training env ───────────────────────────────────
     vec_env = DummyVecEnv([make_env(snapshot_dir=snapshot_dir)])
 
-    # ── 2. MaskablePPO agent ─────────────────────────────────────────
     if resume:
         if not os.path.exists(resume) and not os.path.exists(resume + ".zip"):
             raise SystemExit(f"Resume model not found: {resume}")
@@ -252,7 +221,7 @@ def train(total_timesteps: int, snapshot_freq: int, snapshot_dir: str, resume: s
             env             = vec_env,
             tensorboard_log = "./tensorboard_logs/",
         )
-        # Restore any hyperparams that load() doesn't preserve
+        
         model.ent_coef = DEFAULTS["ent_coef"]
     else:
         model = MaskablePPO(
@@ -270,7 +239,7 @@ def train(total_timesteps: int, snapshot_freq: int, snapshot_dir: str, resume: s
             tensorboard_log = "./tensorboard_logs/",
         )
 
-    # ── 3. callbacks ─────────────────────────────────────────────────
+    # 3. callbacks
     snap_cb    = SnapshotCallback(snapshot_freq, snapshot_dir, verbose=1)
     winloss_cb = WinLossCallback(print_every=200, verbose=1)
     eval_cb    = EvalVsSnapshotCallback(
@@ -281,7 +250,7 @@ def train(total_timesteps: int, snapshot_freq: int, snapshot_dir: str, resume: s
         verbose      = 1,
     )
 
-    # ── 4. train ─────────────────────────────────────────────────────
+    #4. train
     print("=" * 60)
     print("  MaskablePPO — poker_env_3 (FixedPokerEnvironment)")
     print(f"  OBS dim     : {FixedPokerEnvironment.OBS_DIM}")
@@ -298,16 +267,16 @@ def train(total_timesteps: int, snapshot_freq: int, snapshot_dir: str, resume: s
         reset_num_timesteps  = resume is None,
     )
 
-    # ── 5. save final model ───────────────────────────────────────────
+    # save final model 
     final_path = "poker_masked_ppo_final"
     model.save(final_path)
     print(f"\n✓  Final model saved → {final_path}.zip")
 
-    # ── 6. quick post-training eval ───────────────────────────────────
+    
     N_EVAL = 50
     print(f"\n── Post-training evaluation ({N_EVAL} hands) ──")
     raw_env      = FixedPokerEnvironment(buy_in=100.0, sb=5.0, bb=10.0)
-    raw_env._opponent_model = None  # pure random opponent — no snapshot loading lag
+    raw_env._opponent_model = None  
     eval_env_raw = ActionMasker(raw_env, mask_fn)
     wins = losses = pushes = 0
     total_reward  = 0.0
@@ -316,7 +285,7 @@ def train(total_timesteps: int, snapshot_freq: int, snapshot_dir: str, resume: s
         obs, info = eval_env_raw.reset()
         done = False
         step_limit = 0
-        while not done and step_limit < 50:   # hard cap: prevent infinite loops
+        while not done and step_limit < 50:  
             masks  = np.array(info.get("action_masks", mask_fn(raw_env)), dtype=bool)
             action, _ = model.predict(obs, action_masks=masks, deterministic=True)
             obs, reward, done, truncated, info = eval_env_raw.step(int(action))
@@ -333,7 +302,7 @@ def train(total_timesteps: int, snapshot_freq: int, snapshot_dir: str, resume: s
     return model
 
 
-# ── CLI ───────────────────────────────────────────────────────────────
+# CLI
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description="Train MaskablePPO poker agent.")

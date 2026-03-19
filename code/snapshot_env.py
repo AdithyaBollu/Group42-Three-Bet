@@ -43,7 +43,7 @@ class FixedPokerEnvironment(gym.Env):
     RAISE_POT = 5
 
     # Number of past actions encoded in each observation.
-    # Each slot = 7 dims: [who_acted | one-hot action (6)]
+    # Each slot = 7 dims: [who_acted | one-hot action (6 different actions)]
     ACTION_HISTORY_LEN = 6
     OBS_DIM = 43 + ACTION_HISTORY_LEN * 7  # 85
 
@@ -67,7 +67,7 @@ class FixedPokerEnvironment(gym.Env):
         self.snapshot_pool_size = snapshot_pool_size
         self.player_type = player_type
 
-        self.player_seat = 0  # toggled each reset
+        self.player_seat = 0 
 
         self.observation_space = spaces.Box(
             low=0.0, high=1.0, shape=(self.OBS_DIM,), dtype=np.float32
@@ -80,32 +80,24 @@ class FixedPokerEnvironment(gym.Env):
         self.state: Any = None
         self.done = True
         self.last_actions   = [-1, -1]
-        # Chronological list of (actor_seat, action_int) for the current hand.
-        # Sliding window of the last ACTION_HISTORY_LEN entries goes into obs.
+        
         self.action_history: list[tuple[int, int]] = []
 
         self._opponent_model = None
         self._episode_count = 0
         self._load_opponent()
 
-    # ------------------------------------------------------------
-    # Card helpers
-    # ------------------------------------------------------------
 
     def _random_hand(self) -> str:
         dealable = list(self.state.get_dealable_cards())
         cards = random.sample(dealable, 2)
         return "".join(c.rank + c.suit for c in cards)
 
-    # ------------------------------------------------------------
-    # Opponent loading
-    # ------------------------------------------------------------
 
     def _available_opponent_snapshots(self) -> list[str]:
         pattern = os.path.join(self.snapshot_dir + self.player_type, "snapshot_*.zip")
         snaps = glob.glob(pattern)
         # Sort numerically by the timestep number embedded in the filename
-        # e.g. snapshot_50000.zip → 50000, snapshot_100000.zip → 100000
         def _ts(p: str) -> int:
             try:
                 return int(os.path.basename(p).replace("snapshot_", "").replace(".zip", ""))
@@ -120,7 +112,7 @@ class FixedPokerEnvironment(gym.Env):
             self._opponent_model = None
             return
 
-        chosen = snaps[-1]  # always use the latest snapshot
+        chosen = snaps[-1] 
         try:
             from sb3_contrib import MaskablePPO
             self._opponent_model = MaskablePPO.load(chosen)
@@ -129,9 +121,6 @@ class FixedPokerEnvironment(gym.Env):
             print(f"  [opponent] FAILED to load {chosen}: {e}")
             self._opponent_model = None
 
-    # ------------------------------------------------------------
-    # Legal mask
-    # ------------------------------------------------------------
 
     def _legal_mask(self, player_seat) -> list[int]:
         mask = [0, 0, 0, 0, 0, 0]
@@ -151,7 +140,6 @@ class FixedPokerEnvironment(gym.Env):
                 if opp_bet > my_bet:
                     mask[self.CALL] = 1
                 else:
-                    # Can check for free — folding is never correct, make it illegal
                     mask[self.CHECK] = 1
                     mask[self.FOLD]  = 0
 
@@ -165,10 +153,6 @@ class FixedPokerEnvironment(gym.Env):
             mask[self.FOLD]  = 0
 
         return mask
-
-    # ------------------------------------------------------------
-    # Opponent action
-    # ------------------------------------------------------------
 
     def _opponent_action(self, obs: np.ndarray, player_seat: int) -> int:
         mask = self._legal_mask(player_seat)
@@ -188,10 +172,6 @@ class FixedPokerEnvironment(gym.Env):
 
         return random.choice(legal) if legal else self.CHECK
 
-    # ------------------------------------------------------------
-    # New hand (FIXED dealer rotation + hole assignment)
-    # ------------------------------------------------------------
-
     def _new_hand(self):
         self.agent.cash_val = self.buy_in
         self.opp.cash_val = self.buy_in
@@ -210,7 +190,7 @@ class FixedPokerEnvironment(gym.Env):
                 Automation.CHIPS_PULLING,
             ),
             True,
-            0,               # antes = 0 (no ante); dealer_position does not map here
+            0,              
             (self.sb, self.bb),
             self.bb,
             (self.buy_in, self.buy_in),
@@ -223,7 +203,7 @@ class FixedPokerEnvironment(gym.Env):
         bb_hand = self._random_hand()
         self.state.deal_hole(bb_hand)
 
-        # FIXED hole assignment
+        
         if self.player_seat == 0:
             self.players_cards = sb_hand
             self.opponents_cards = bb_hand
@@ -235,9 +215,6 @@ class FixedPokerEnvironment(gym.Env):
         self.last_actions   = [-1, -1]
         self.action_history = []
 
-    # ------------------------------------------------------------
-    # Observation (FIXED signature + zeroing board region)
-    # ------------------------------------------------------------
 
     def _build_obs(self, player_position: int) -> np.ndarray:
         obs = np.zeros(self.OBS_DIM, dtype=np.float32)
@@ -263,7 +240,7 @@ class FixedPokerEnvironment(gym.Env):
 
         obs[0:10] = cards_to_vector(hole_cards)
 
-        # FIXED zeroing
+        
         obs[10:35] = 0.0
         board_vec = cards_to_vector(community_cards)
         obs[10 : 10 + len(board_vec)] = board_vec
@@ -285,8 +262,6 @@ class FixedPokerEnvironment(gym.Env):
 
         # [43 : 43 + ACTION_HISTORY_LEN*7] — action history (oldest → newest).
         # Each 7-dim slot: [who_acted, fold, check, call, raise_q, raise_h, raise_p]
-        #   who_acted: 0.0 = self (player_position), 1.0 = opponent.
-        # Unused slots stay all-zero ("no action yet").
         history = self.action_history[-self.ACTION_HISTORY_LEN:]
         for i, (actor_seat, act) in enumerate(history):
             slot = 43 + i * 7
@@ -296,9 +271,6 @@ class FixedPokerEnvironment(gym.Env):
 
         return obs
 
-    # ------------------------------------------------------------
-    # Turn sequencing (FIXED)
-    # ------------------------------------------------------------
 
     def _maybe_run_opponent(self):
         opponent_seat = 1 - self.player_seat
@@ -313,9 +285,6 @@ class FixedPokerEnvironment(gym.Env):
             self.last_actions[opponent_seat] = action
             self.action_history.append((opponent_seat, action))
 
-    # ------------------------------------------------------------
-    # Gym API
-    # ------------------------------------------------------------
 
     def reset(self, *, seed=None, options=None):
         super().reset(seed=seed)
@@ -325,19 +294,15 @@ class FixedPokerEnvironment(gym.Env):
         if self._episode_count % self.opponent_refresh_freq == 0:
             self._load_opponent()
 
-        # FIXED blind alternation
         self.player_seat = 1 - self.player_seat
 
         # Loop until the agent actually has a decision to make.
         # The opponent may legally fold pre-flop (or otherwise end the hand)
-        # before the agent gets to act — retry with the SAME seat so alternation
-        # is never disrupted by retries.
         while True:
             self._new_hand()
-            self._maybe_run_opponent()  # let opponent act first if needed
+            self._maybe_run_opponent() 
             if not self._hand_over():
                 break
-            # Hand ended before agent could act — try again, same seat
 
         obs  = self._build_obs(self.player_seat)
         info = {"action_masks": self._legal_mask(self.player_seat)}
@@ -345,7 +310,6 @@ class FixedPokerEnvironment(gym.Env):
 
     def step(self, action: int):
         # Safety: if something caused the opponent to still need to act
-        # (e.g. a board-deal edge case), resolve that before the agent moves.
         self._maybe_run_opponent()
 
         # If the hand somehow ended before agent acts, treat as a no-op terminal.
@@ -360,7 +324,6 @@ class FixedPokerEnvironment(gym.Env):
             self._execute_action(action, player=self.player_seat)
             self.action_history.append((self.player_seat, action))
 
-        # Let opponent fully respond
         self._maybe_run_opponent()
 
         reward = 0.0
@@ -378,12 +341,8 @@ class FixedPokerEnvironment(gym.Env):
 
         return obs, reward, done, False, info
 
-    # ------------------------------------------------------------
-    # Hand state helpers
-    # ------------------------------------------------------------
 
     def _hand_over(self) -> bool:
-        """True when PokerKit considers the hand finished."""
         if self.state.actor_index is not None:
             return False
         if hasattr(self.state, "can_deal_board") and self.state.can_deal_board():
@@ -402,7 +361,6 @@ class FixedPokerEnvironment(gym.Env):
         return "".join(c.rank + c.suit for c in cards)
 
     def _deal_board_if_needed(self):
-        """Deal community cards whenever PokerKit is waiting for them."""
         if self._hand_over():
             return
         max_deals = 4
@@ -418,7 +376,6 @@ class FixedPokerEnvironment(gym.Env):
                 break
 
     def _execute_action(self, action: int, player: int) -> bool:
-        """Translate a discrete action into a PokerKit call. Returns True on success."""
         try:
             if action == self.FOLD:
                 self.state.fold()
@@ -449,7 +406,6 @@ class FixedPokerEnvironment(gym.Env):
             return True
 
         except Exception:
-            # Illegal action — fall back to check/call rather than crashing
             if action != self.FOLD:
                 try:
                     self.state.check_or_call()

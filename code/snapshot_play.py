@@ -1,10 +1,3 @@
-"""
-Interactive human-vs-PPO model play script (poker_env_3 version).
-
-Usage:
-    python play2.py --model snapshots/final_1000000.zip --human-seat 0
-"""
-
 import argparse
 import os
 import random
@@ -15,7 +8,7 @@ from sb3_contrib import MaskablePPO
 
 from poker_env_3 import FixedPokerEnvironment
 
-Env = FixedPokerEnvironment  # short alias
+Env = FixedPokerEnvironment  
 
 ACTION_NAMES = {
     0: "FOLD",
@@ -27,10 +20,9 @@ ACTION_NAMES = {
 }
 
 
-# ── standalone helpers (not present in poker_env_3) ──────────────────
 
 def hand_over(env: Env) -> bool:
-    """True when PokerKit considers the hand finished."""
+    
     if env.state.actor_index is not None:
         return False
     if hasattr(env.state, "can_deal_board") and env.state.can_deal_board():
@@ -39,7 +31,7 @@ def hand_over(env: Env) -> bool:
 
 
 def betting_round(env: Env) -> int:
-    """0=preflop, 1=flop, 2=turn, 3=river."""
+    
     n = len(env.state.board_cards) if env.state.board_cards else 0
     if n == 0:   return 0
     elif n == 3: return 1
@@ -48,14 +40,14 @@ def betting_round(env: Env) -> int:
 
 
 def random_cards(env: Env, n: int) -> str:
-    """Pick n random dealable cards and return them as a concatenated string."""
+    
     dealable = list(env.state.get_dealable_cards())
     cards = random.sample(dealable, n)
     return "".join(c.rank + c.suit for c in cards)
 
 
 def deal_board_if_needed(env: Env):
-    """Deal community cards whenever PokerKit is waiting for them."""
+    
     if hand_over(env):
         return
     max_deals = 4
@@ -72,17 +64,13 @@ def deal_board_if_needed(env: Env):
 
 
 def resolve_hand(env: Env, human_seat: int) -> float:
-    """
-    Return the net normalised result for the human seat.
-    Positive = win, negative = loss.
-    PokerKit already updated stacks via CHIPS_PULLING automation.
-    """
+   
     final_stack = float(env.state.stacks[human_seat])
     net = final_stack - float(env.buy_in)
     return net / float(env.buy_in)
 
 
-# ── pot / bet helpers ────────────────────────────────────────────────
+
 
 def flatten_board(state) -> List[str]:
     cards = []
@@ -127,10 +115,10 @@ def get_raise_amounts(env: Env, player: int) -> dict:
 
 
 def compute_legal_mask(env: Env, player: int) -> list:
-    """Must exactly mirror env._legal_mask() used during training."""
+    
     mask = [0, 0, 0, 0, 0, 0]
     if hand_over(env):
-        return mask  # all-zero — hand is done
+        return mask  
 
     mask[Env.FOLD] = 1
     try:
@@ -139,9 +127,9 @@ def compute_legal_mask(env: Env, player: int) -> list:
             my_bet  = float(bets[player])       if player       < len(bets) else 0.0
             opp_bet = float(bets[1 - player])   if 1 - player   < len(bets) else 0.0
             if opp_bet > my_bet:
-                mask[Env.CALL] = 1          # there is a bet to call
+                mask[Env.CALL] = 1          
             else:
-                mask[Env.CHECK] = 1         # free check — FOLD removed to match training
+                mask[Env.CHECK] = 1        
                 mask[Env.FOLD]  = 0
         if env.state.can_complete_bet_or_raise_to():
             mask[Env.RAISE_QUARTER] = 1
@@ -156,14 +144,11 @@ def compute_legal_mask(env: Env, player: int) -> list:
 
 
 def execute_action_safely(env: Env, action: int, player: int) -> bool:
-    """
-    Execute one action directly against the PokerKit state.
-    Returns True if the hand is now over.
-    """
+    
     if action == Env.FOLD:
         env.state.fold()
         env.last_actions[player] = action
-        return True  # folding always ends the hand for that player
+        return True  
 
     elif action in (Env.CHECK, Env.CALL):
         env.state.check_or_call()
@@ -186,7 +171,7 @@ def execute_action_safely(env: Env, action: int, player: int) -> bool:
     return hand_over(env)
 
 
-# ── display ──────────────────────────────────────────────────────────
+
 
 def show_table(env: Env, human_seat: int):
     print("\n" + "=" * 55)
@@ -247,7 +232,7 @@ def human_take_action(env: Env, human_seat: int) -> int:
 
 
 def model_take_action(model: MaskablePPO, env: Env, actor: int) -> int:
-    obs  = env._build_obs(actor)  # player_position is positional in poker_env_3
+    obs  = env._build_obs(actor)  
     arr  = np.asarray(obs, dtype=np.float32).reshape(1, -1)
     mask = compute_legal_mask(env, actor)
     action, _ = model.predict(arr, action_masks=np.array(mask, dtype=bool), deterministic=True)
@@ -282,11 +267,11 @@ def show_result(env: Env, human_seat: int):
     print("=" * 55)
 
 
-# ── main game loop ───────────────────────────────────────────────────
+
 
 def play_hand(model: MaskablePPO, human_seat: int):
     env = FixedPokerEnvironment(buy_in=75.0, sb=5.0, bb=10.0)
-    env.player_seat = human_seat  # so _new_hand assigns cards correctly
+    env.player_seat = human_seat 
     env._new_hand()
     env.last_actions = [-1, -1]
 
@@ -296,7 +281,7 @@ def play_hand(model: MaskablePPO, human_seat: int):
     print(f"  Blinds posted → Pot: {get_total_pot(env):.1f}")
 
     while True:
-        # Always deal any pending board cards before checking who acts
+        
         deal_board_if_needed(env)
 
         if hand_over(env):
@@ -305,7 +290,7 @@ def play_hand(model: MaskablePPO, human_seat: int):
 
         actor = env.state.actor_index
 
-        # actor is None but hand not over means board cards are still needed
+        
         if actor is None:
             deal_board_if_needed(env)
             if hand_over(env):
@@ -313,7 +298,7 @@ def play_hand(model: MaskablePPO, human_seat: int):
             return
 
         if actor == human_seat:
-            # ── Human acts ────────────────────────────────────────
+            
             show_table(env, human_seat)
             action    = human_take_action(env, human_seat)
             print(f"\n  You play : {ACTION_NAMES.get(action, action)}")
@@ -323,7 +308,7 @@ def play_hand(model: MaskablePPO, human_seat: int):
                 return
 
         else:
-            # ── Model acts ────────────────────────────────────────
+            
             action     = model_take_action(model, env, actor)
             seat_label = "BB" if actor == 0 else "SB"
 
@@ -337,7 +322,7 @@ def play_hand(model: MaskablePPO, human_seat: int):
 
             done = execute_action_safely(env, action, actor)
 
-            # Show updated pot after a raise so the human sees it before their turn
+            
             if action in (Env.RAISE_QUARTER, Env.RAISE_HALF, Env.RAISE_POT):
                 print(f"  → Pot now {get_total_pot(env):.1f}  |  Your call: {get_call_amount(env, human_seat):.1f}")
 
