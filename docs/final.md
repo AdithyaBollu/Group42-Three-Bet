@@ -7,7 +7,7 @@ title: Final Report
 
 
 # Project Summary
-We chose poker as the focus for this project because it’s a fun, familiar, and surprisingly deep game that naturally captures a lot of interesting decision-making challenges. Most people already have some general intuition about poker — betting, folding, or bluffing — so it’s easy to understand what the agent is trying to do and why its behavior matters. At the same time, poker isn’t just a simple game of luck or fixed rules; it’s a competitive setting where strategy, adaptation, and analysis all play a role. That made it a really engaging domain to explore with how intelligent agents can learn and improve over time.
+We chose poker as the focus for this project because it’s a fun, familiar, and surprisingly deep game that naturally captures a lot of interesting decision-making challenges. Most people already have some general intuition about poker— betting, folding, or bluffing— so it’s easy to understand what the agent is trying to do and why its behavior matters. At the same time, poker isn’t just a simple game of luck or fixed rules; it’s a competitive setting where strategy, adaptation, and analysis all play a role. That made it a really engaging domain to explore with how intelligent agents can learn and improve over time.
 
 
 Poker is definitely not a trivial problem to solve. One of the biggest challenges is that it’s an imperfect information game, meaning players don’t have access to all the relevant information (like the opponent’s cards). On top of that, there’s randomness from the card draws, a huge number of possible game states, and the need to think ahead across multiple rounds of betting. A good poker strategy also involves unpredictability to avoid being exploited, so the agent can’t just follow a fixed set of rules. All of this makes it really hard to design a strong strategy by hand, since the “best” decision often depends on hidden information and long-term outcomes rather than immediate results. Additionally, poker naturally fits into a state → action → reward framework: the agent observes the current game state (cards, bets, position), takes an action (fold, call, raise), and eventually receives a reward based on the outcome of the hand. This structure makes it especially well suited for reinforcement learning, where the agent can learn effective strategies over time by optimizing for long-term expected reward.
@@ -286,6 +286,48 @@ $$
 - Tuned abstraction granularity based on convergence
 
 ---
+
+## Current Status Evaluation
+
+### Snapshot Self-Play Evaluation
+<img width="1400" height="400" src="/Group42-Three-Bet/assets/Snapshot_Evaluations.png" />
+
+Looking at our graphs we can see that the reward mean shows relatively small fluctuations across training, with the smoothed value sitting at approximately 0.05, slightly positive but close to zero. This suggests the agent is marginally above a neutral reward baseline, though there is still room for improvement in terms of earning consistently higher rewards. The value loss shows a steady decrease from ~0.65 to ~0.45, indicating the critic is becoming better calibrated at estimating future returns, which is a positive sign that learning is progressing and a strategy is being devised.
+
+In our evaluation, we ran 10,000 hands between our most recent model (Model A) and a previous snapshot (Model B). 
+
+Model A achieved a lower overall win rate, but demonstrated a significantly higher reward per hand, finishing profitable. This indicates that Model A has learned a more selective strategy, choosing to fold unfavorable hands rather than playing every opportunity. This is a hallmark of sound poker/card game strategy, where knowing when not to play is just as important as knowing when to play.
+
+Model B, by contrast, won more hands in total but generated a negative reward per hand, ultimately losing money overall. This suggests Model B developed an aggressive, indiscriminate strategy, playing most or all hands regardless of their strength. While this inflates the win count, it leads to poor expected value over time, as the losses on weak hands outweigh the gains.
+
+In summary, Model A's behavior reflects a more mature and strategically sound policy, prioritizing quality of play over quantity. The improvement in reward per hand over the snapshot is a strong indicator that the model is learning meaningful game strategy rather than simply maximizing hand participation.
+
+
+### Fictitious Self-Play Evaluation
+<img width="1400" height="400" src="/Group42-Three-Bet/assets/Fictitious_Evaluations.png" />
+
+Looking at the updated graphs we can see that the reward mean continues to show small fluctuations across training, remaining tightly bounded between approximately -0.05 and 0.05, with the smoothed value sitting slightly above zero. In the context of a poker environment, this is a strong indication of stability, suggesting the agent is maintaining performance close to a neutral baseline while avoiding large negative outcomes, though there is still room for improvement in achieving more consistently positive rewards. The value loss shows a continued steady decrease from around ~0.7 to ~0.35–0.4, indicating the critic is becoming increasingly well calibrated at estimating future returns, which is a positive sign that learning is stabilizing and a more refined strategy is being developed.
+
+In our evaluation, we ran 10,000 hands between our two self play agents (Agent A and Agent B). 
+
+Both Model A and Model B have very similar metrics in terms of win percentage and average reward, with both agents hovering close to a 50% win rate and near-zero average chips. However, Model A appears to be doing slightly better overall, with a marginally higher average chip gain (+0.02 vs -0.02) and only a small deficit in total wins compared to losses. These near-identical statistics demonstrate how the two agents are converging toward a Nash equilibrium, where neither agent can significantly outperform the other.
+
+Breaking it down further, we can see some positional differences. Model A performs worse as the big blind (44.5% win rate) but compensates with stronger performance as the small blind (52.2%), whereas Model B shows a similar pattern but slightly more polarized, doing better as the small blind (53.0%) and worse as the big blind (46.8%)
+
+Overall, the symmetry in both win rates and rewards across positions suggests that both agents have learned balanced strategies and are effectively countering each other. The slight edge seen in Model A is minimal and likely within the variance expected over 10,000 hands, further supporting the conclusion that both models are approaching equilibrium-like play rather than one clearly dominating the other.
+
+
+
+### MC CFR Evaluation
+<img width="900" height="500" src="/Group42-Three-Bet/assets/MCCFR_Evalutions.png" />
+
+For our MC CFR evaluation we ran 10,000 hands between our ficitious self-play Agent A and our CFR model.
+
+From the results we can see that MC CFR’s win rate is near 50% (49.5%), but it is consistently losing in terms of average reward against Agent A (-1.65 vs +1.65). This indicates that while MC CFR is able to win a comparable number of hands, the pots it loses tend to be larger, suggesting suboptimal decision-making in higher-stakes situations. This shows that our MC CFR model is still exploitable and not yet fully converged. We need to keep training it for longer ( We were unable to do so due to time constraints).
+
+---
+
+
 
 # Summary
 
