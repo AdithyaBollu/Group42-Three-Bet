@@ -51,10 +51,10 @@ At each decision point, the acting player chooses from six discrete actions:
 
 This discretized action space keeps the problem tractable while still capturing key strategic tradeoffs.
 
-To reduce complexity, models are trained to play a **single hand (fixed stack size)** rather than tournament-style poker. This avoids complications from varying stack depths and allows faster generalization.
+To reduce complexity, models are trained to play a single hand (fixed stack size) rather than tournament-style poker. This avoids complications from varying stack depths and allows faster generalization.
 
 Performance is measured as:
-- **Per-hand win rate**, rather than long-term bankroll growth
+- Per-hand win rate, rather than long-term bankroll growth
 
 ---
 
@@ -89,7 +89,7 @@ Rewards are **sparse and delayed**:
 
 # Why Masked PPO vs PPO
 
-Poker has **state-dependent legal actions**, so we use **Masked PPO** instead of standard PPO.
+Poker has **state-dependent legal actions**, so we use Masked PPO instead of standard PPO.
 
 - Illegal actions have logits set to \( -\infty \)
 - This ensures:
@@ -100,8 +100,6 @@ Benefits:
 - Prevents illegal moves entirely  
 - Improves learning efficiency  
 - Reduces noise in gradient updates  
-
-> “Trust region methods are some of the best methods out there” — Roy Fox (2026)
 
 ---
 
@@ -212,7 +210,7 @@ Over time:
 
 # Monte Carlo Counterfactual Regret Minimization (MCCFR)
 
-We implement **MCCFR**, a game-theoretic algorithm for imperfect-information games.
+We implement MCCFR, a game-theoretic algorithm for imperfect-information games.
 
 ## Regret Definition
 
@@ -235,7 +233,7 @@ $$
 ## Key Properties
 
 - Minimizes regret at each information set  
-- Average strategy converges to a **Nash equilibrium**  
+- Average strategy converges to a Nash equilibrium  
 - Produces strategies that are difficult to exploit  
 
 ## Implementation Details
@@ -282,7 +280,7 @@ $$
 
 ## MCCFR
 
-- Up to **100,000 unique hands**
+- Up to 100,000 unique hands
 - Tuned abstraction granularity based on convergence
 
 ---
