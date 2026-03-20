@@ -99,7 +99,9 @@ Poker has **state-dependent legal actions**, so we use Masked PPO instead of sta
 Benefits:
 - Prevents illegal moves entirely  
 - Improves learning efficiency  
-- Reduces noise in gradient updates  
+- Reduces noise in gradient updates
+
+**“Trust region methods are some of the best methods out there” - Roy Fox 2026 CS277 lec. 6**
 
 ---
 
